@@ -7,11 +7,17 @@ public class InventoryHandler : MonoBehaviour
     [SerializeField] private int[] _cellItemAmount;
     [SerializeField] private float[] _cellItemWeight;
 
+    public ItemInfo GetInfoItemID(int id) => _cellItemID[id];
+    public int GetInfoItemAmount(int id) => _cellItemAmount[id];
+    public float GetInfoItemWeight(int id) => _cellItemWeight[id];
+    public int GetInfoMaxCells() => MAX_INVENTORY_CELLS;
+
     private Color _selectedCellColor = new Color(0.3113208f, 0.3113208f, 0.3113208f, 1f);
     private Color _neutralCellColor = new Color(0.1132075f, 0.1132075f, 0.1132075f, 1f);
 
     private float _currentWeight;
     [SerializeField] private WeightIndicator _weightIndicator;
+    [SerializeField] private ShowHideInventory _showHideInventory;
     public enum ItemInfo
     {
         None,
@@ -38,12 +44,22 @@ public class InventoryHandler : MonoBehaviour
             _cellItemWeight[i] = 0f;
         }
     }
-    public void DropItem(int id)
+    private void OnEnable()
     {
-        if (id < MAX_INVENTORY_CELLS && id != -1)
+        EventBus.OnClickedInventoryCell += SelectInventoryCell;
+        EventBus.OnClickedButtonDropItem += DropItem;
+    }
+    private void OnDisable()
+    {
+        EventBus.OnClickedInventoryCell -= SelectInventoryCell;
+        EventBus.OnClickedButtonDropItem -= DropItem;
+    }
+    public void DropItem()
+    {
+        if (selectedCellID < MAX_INVENTORY_CELLS && selectedCellID != -1)
         {
             // Spawn item on ground
-            GivePlayerItem(id, 0, 0, 0);
+            GiveItemForCellID(selectedCellID, 0, 0, 0);
             ResetInventorySelection();
             _weightIndicator.UpdateWeightInfo();
         }
@@ -67,8 +83,8 @@ public class InventoryHandler : MonoBehaviour
             {
                 if (_cellItemID[selectedCellID] != ItemInfo.None && _cellItemID[id] == ItemInfo.None)
                 {
-                    GivePlayerItem(id, _cellItemID[selectedCellID], _cellItemAmount[selectedCellID], _cellItemWeight[selectedCellID]);
-                    GivePlayerItem(selectedCellID, 0, 0, 0);
+                    GiveItemForCellID(id, _cellItemID[selectedCellID], _cellItemAmount[selectedCellID], _cellItemWeight[selectedCellID]);
+                    GiveItemForCellID(selectedCellID, 0, 0, 0);
                     ResetInventorySelection();
                     Debug.Log("Поменялись");
                 }
@@ -92,28 +108,24 @@ public class InventoryHandler : MonoBehaviour
         selectedCellID = id;
         cellObjects[id].GetComponent<Image>().color = _selectedCellColor;
     }
-    public void GivePlayerItem(int id, ItemInfo item, int amount, float weight)
+    public void GiveItemInFreeCell(ItemInfo item, int amount, float weight)
+    {
+        bool full = false;
+        for(int i = 0; i < MAX_INVENTORY_CELLS; i++)
+        {
+            if (_cellItemID[i] != ItemInfo.None) continue;
+            GiveItemForCellID(i, item, amount, weight);
+            full = true;
+            break;
+        }
+        if (!full) Debug.Log("Нет свободного места!");
+    }
+    public void GiveItemForCellID(int id, ItemInfo item, int amount, float weight)
     {
         _cellItemID[id] = item;
         _cellItemAmount[id] = amount;
         _cellItemWeight[id] = weight;
-        //_weightIndicator.UpdateWeightInfo();
-    }
-    public ItemInfo GetInfoItemID(int id)
-    {
-        return _cellItemID[id];
-    }
-    public int GetInfoItemAmount(int id)
-    {
-        return _cellItemAmount[id];
-    }
-    public float GetInfoItemWeight(int id)
-    {
-        return _cellItemWeight[id];
-    }
-    public int GetInfoMaxCells()
-    {
-        return MAX_INVENTORY_CELLS;
+        if(_showHideInventory.IsInventoryShow) _weightIndicator.UpdateWeightInfo();
     }
     public float GetCurrentWeightInventory()
     {
