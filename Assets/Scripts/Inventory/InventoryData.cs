@@ -2,7 +2,7 @@ using UnityEngine;
 
 public class InventoryData : MonoBehaviour
 {
-    private const int MAX_INVENTORY_CELLS = 8;
+    private readonly int MAX_INVENTORY_CELLS = 8;
 
     public enum ItemInfo
     {

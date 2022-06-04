@@ -1,4 +1,5 @@
 using System;
+using UnityEngine.Events;
 
 public static class EventBus
 {
@@ -8,4 +9,7 @@ public static class EventBus
     public static Action<int> OnClickedButtonDropItemEvent;
 
     public static Func<int> GetMaxCells;
+
+    public static UnityAction OnPlayerShot;
+    public static UnityAction OnPlayerShotOnEnemy;
 }

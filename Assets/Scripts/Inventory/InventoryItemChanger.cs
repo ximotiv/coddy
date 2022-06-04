@@ -55,7 +55,7 @@ public class InventoryItemChanger : MonoBehaviour
     public void MoveItemToCell(int oldCellID, int newCellID)
     {
         GiveItemToCellID(newCellID, _cellItemID[oldCellID], _cellItemAmount[oldCellID], _cellItemWeight[oldCellID], false);
-        GiveItemToCellID(oldCellID, InventoryData.ItemInfo.None, 0, 0);
+        GiveItemToCellID(oldCellID, InventoryData.ItemInfo.None, 0, 0, false);
     }
     private void DropItem(int id)
     {

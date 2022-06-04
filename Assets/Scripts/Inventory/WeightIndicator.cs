@@ -28,25 +28,25 @@ public class WeightIndicator : MonoBehaviour
     {
         if(_showHideInventory.IsInventoryShow)
         {
-            float _weight = GetCurrentWeightInventory();
-            _weightBar.DOFillAmount(_weight / 100, 1f);
-            _weightBar.DOColor(_gradientFill.Evaluate(_weight / 100), 1f);
-            _textWeight.text = _weight + " kg";
+            float weight = GetCurrentWeightInventory();
+            _weightBar.DOFillAmount(weight / 100, 1f);
+            _weightBar.DOColor(_gradientFill.Evaluate(weight / 100), 1f);
+            _textWeight.text = weight + " kg";
         }
     }
     private float GetCurrentWeightInventory()
     {
-        float _currentWeight = 0;
-        int _maxCells = (int)EventBus.GetMaxCells?.Invoke();
-        for (int i = 0; i < _maxCells; i++)
+        float currentWeight = 0;
+        int maxCells = (int)EventBus.GetMaxCells?.Invoke();
+        for (int i = 0; i < maxCells; i++)
         {
             InventoryData.ItemInfo _cellItemID = _itemChanger.GetInfoItemID(i);
             int _cellItemAmount = _itemChanger.GetInfoItemAmount(i);
             float _cellItemWeight = _itemChanger.GetInfoItemWeight(i);
 
             if (_cellItemID == InventoryData.ItemInfo.None) continue;
-            _currentWeight += _cellItemWeight * _cellItemAmount;
+            currentWeight += _cellItemWeight * _cellItemAmount;
         }
-        return _currentWeight;
+        return currentWeight;
     }
 }
