@@ -1,21 +1,63 @@
 using UnityEngine;
+using DG.Tweening;
 
+[RequireComponent(typeof(Animator))]
 public abstract class Enemy : MonoBehaviour
 {
-    [SerializeField] private int _health;
+    [SerializeField] protected int Health;
+    [SerializeField] protected Animator EnemyAnimator;
 
-    private void Start()
+    public Transform TargetChase;
+    private Vector3 _targetLastPosition;
+
+    private Tweener _tween;
+
+    public bool IsEnemyDead { get; private set; }
+
+    public virtual void Init()
     {
-        _health = 100;
+        IsEnemyDead = false;
+        EnemyAnimator = GetComponent<Animator>();
+        _tween = transform.DOMove(TargetChase.position, 2).SetAutoKill(false);
+        _targetLastPosition = TargetChase.position;
     }
 
-    public void TakeDamage(int damage)
+    protected void FixedUpdate()
     {
-        EventBus.OnPlayerShotOnEnemy?.Invoke();
-        _health -= damage;
-        if(_health <= 0)
+        if(_targetLastPosition != TargetChase.position && !IsEnemyDead)
         {
-            Destroy(gameObject);
+            _tween.ChangeEndValue(TargetChase.position, true).Restart();
+            _targetLastPosition = TargetChase.position;
         }
     }
+
+    public virtual void TakeDamage(int damage)
+    {
+        if(!IsEnemyDead)
+        {
+            EventBus.OnPlayerShotOnEnemy?.Invoke();
+            Health -= damage;
+            if (Health <= 0)
+            {
+                OnEnemyDead();
+            }
+            else
+            {
+                PlayAnimTakeDamage();
+            }
+        }
+    }
+
+    protected virtual void OnEnemyDead()
+    {
+        IsEnemyDead = true;
+        Invoke(nameof(DisableObject), 1f);
+    }
+
+    private void DisableObject()
+    {
+        gameObject.SetActive(false);
+    }
+
+    protected abstract void PlayAnimTakeDamage();
 }

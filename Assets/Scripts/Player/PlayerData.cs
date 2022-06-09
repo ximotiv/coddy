@@ -44,7 +44,7 @@ public class PlayerData : MonoBehaviour
     {
         if (collision.TryGetComponent(out Enemy enemy))
         {
-            _currentEnemyClosed = enemy;
+            if(!enemy.IsEnemyDead) _currentEnemyClosed = enemy;
         }
     }
 

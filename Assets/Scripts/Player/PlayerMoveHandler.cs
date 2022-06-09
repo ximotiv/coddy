@@ -64,7 +64,7 @@ public class PlayerMoveHandler : MonoBehaviour
 
     private void PlayerIsJumping()
     {
-        transform.position = new Vector2(transform.position.x, _curve.Evaluate(_currentTime));
+        transform.position = new Vector3(transform.position.x, _curve.Evaluate(_currentTime), 1);
         _currentTime += Time.deltaTime;
         if (_currentTime >= _totalTime)
         {
