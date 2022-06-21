@@ -9,7 +9,7 @@ public class LevelHandler : MonoBehaviour
     [SerializeField] private Image _background;
 
     private AudioSource _music;
-    private bool _isLevelStarted;
+    public bool IsLevelStarted { get; private set; }
 
 
     private void Start()
@@ -28,12 +28,12 @@ public class LevelHandler : MonoBehaviour
 
     private void StartMusic()
     {
-        if(!_isLevelStarted)
+        if(!IsLevelStarted)
         {
             _road.transform.DOMoveX(3.87093f, 0.5f);
             _background.DOFade(1, 0.5f);
             _music.Play();
-            _isLevelStarted = true;
+            IsLevelStarted = true;
         }
     }
 }

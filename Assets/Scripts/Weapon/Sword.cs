@@ -3,8 +3,8 @@ public class Sword : Weapon
     public override void Init(PlayerData player)
     {
         base.Init(player);
-        Damage = 30;
+        Damage = 50;
         Label = "Sword";
-        Cooldown = 0.3f;
+        Cooldown = 0.15f;
     }
 }

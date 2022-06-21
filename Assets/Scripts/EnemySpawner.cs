@@ -6,6 +6,7 @@ public class EnemySpawner : ObjectPool
     [SerializeField] private Vector3[] _enemySpawnPosition;
     [SerializeField] private float _secondsBetweenSpawn;
     [SerializeField] private Transform _targetChase;
+    [SerializeField] private LevelHandler _levelHandler;
 
     private float _elapsedTime;
 
@@ -16,14 +17,17 @@ public class EnemySpawner : ObjectPool
 
     private void Update()
     {
-        _elapsedTime += Time.deltaTime;
-        if(_elapsedTime >= _secondsBetweenSpawn)
+        if(_levelHandler.IsLevelStarted)
         {
-            if(TryGetObject(out GameObject enemy))
+            _elapsedTime += Time.deltaTime;
+            if (_elapsedTime >= _secondsBetweenSpawn)
             {
-                int spawnPoint = Random.Range(0, _enemySpawnPosition.Length);
-                SetEnemy(enemy, _enemySpawnPosition[spawnPoint]);
-                _elapsedTime = 0;
+                if (TryGetObject(out GameObject enemy))
+                {
+                    int spawnPoint = Random.Range(0, _enemySpawnPosition.Length);
+                    SetEnemy(enemy, _enemySpawnPosition[spawnPoint]);
+                    _elapsedTime = 0;
+                }
             }
         }
     }

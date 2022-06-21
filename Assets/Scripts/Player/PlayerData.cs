@@ -5,26 +5,31 @@ using System.Collections.Generic;
 public class PlayerData : MonoBehaviour
 {
     [SerializeField] private int _health;
-    [SerializeField] private List<Weapon> _weapon;
+    [SerializeField] private List<GameObject> _weaponPrefabs;
     [SerializeField] private Vector2 _attackPoint;
     public SpriteRenderer RightHand;
     public float CurrentCooldown = 0;
 
     public Vector2 GetAttackPoint => _attackPoint;
-    private Enemy _currentEnemyClosed;
-    public Enemy CurrentEnemyClosed => _currentEnemyClosed;
 
     private Weapon _currentWeapon;
+
     private Animator _animator;
     private AnimHash _animhash;
 
     private void Start()
     {
-        _currentWeapon = _weapon[0];
-        _currentWeapon.Init(this);
+        SetPlayerWeapon(_weaponPrefabs[0]);
         _health = 100;
         _animator = GetComponent<Animator>();
         _animhash = new AnimHash();
+    }
+
+    public void SetPlayerWeapon(GameObject weapon)
+    {
+        if(_currentWeapon != null) Destroy(_currentWeapon.gameObject);
+        _currentWeapon = Instantiate(weapon, RightHand.transform).GetComponent<Weapon>();
+        _currentWeapon.Init(this);
     }
 
     private void Update()
@@ -39,17 +44,5 @@ public class PlayerData : MonoBehaviour
         {
             _animator.CrossFadeInFixedTime(_animhash.HeroIdle, 0.1f);
         }
-    }
-    private void OnTriggerEnter2D(Collider2D collision)
-    {
-        if (collision.TryGetComponent(out Enemy enemy))
-        {
-            if(!enemy.IsEnemyDead) _currentEnemyClosed = enemy;
-        }
-    }
-
-    private void OnTriggerExit2D(Collider2D collision)
-    {
-        if(_currentEnemyClosed != null) _currentEnemyClosed = null;
     }
 }

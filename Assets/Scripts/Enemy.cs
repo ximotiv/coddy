@@ -1,16 +1,18 @@
 using UnityEngine;
-using DG.Tweening;
 
 [RequireComponent(typeof(Animator))]
+[RequireComponent(typeof(Rigidbody2D))]
+[RequireComponent(typeof(CapsuleCollider2D))]
 public abstract class Enemy : MonoBehaviour
 {
     [SerializeField] protected int Health;
     [SerializeField] protected Animator EnemyAnimator;
 
     public Transform TargetChase;
-    private Vector3 _targetLastPosition;
+    private Vector2 _targetLastPosition;
+    private Rigidbody2D _rigidbody;
 
-    private Tweener _tween;
+    private float _speed = 2f;
 
     public bool IsEnemyDead { get; private set; }
 
@@ -18,16 +20,21 @@ public abstract class Enemy : MonoBehaviour
     {
         IsEnemyDead = false;
         EnemyAnimator = GetComponent<Animator>();
-        _tween = transform.DOMove(TargetChase.position, 2).SetAutoKill(false);
+        _rigidbody = GetComponent<Rigidbody2D>();
+        GetComponent<CapsuleCollider2D>().isTrigger = false;
         _targetLastPosition = TargetChase.position;
     }
 
     protected void FixedUpdate()
     {
-        if(_targetLastPosition != TargetChase.position && !IsEnemyDead)
+        if (!IsEnemyDead && Vector2.Distance(TargetChase.position, transform.position) > 2f)
         {
-            _tween.ChangeEndValue(TargetChase.position, true).Restart();
+            _rigidbody.velocity = new Vector2(TargetChase.position.x > transform.position.x ? _speed : -_speed, 0);
             _targetLastPosition = TargetChase.position;
+        }
+        else
+        {
+            _rigidbody.velocity = Vector2.zero;
         }
     }
 
@@ -50,6 +57,7 @@ public abstract class Enemy : MonoBehaviour
 
     protected virtual void OnEnemyDead()
     {
+        GetComponent<CapsuleCollider2D>().isTrigger = true;
         IsEnemyDead = true;
         Invoke(nameof(DisableObject), 1f);
     }

@@ -501,6 +501,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 7465770134981526837}
+  - component: {fileID: 3108431066799423873}
   - component: {fileID: 7465770134981526839}
   - component: {fileID: 7465770134981526836}
   - component: {fileID: 459567701}
@@ -531,6 +532,27 @@ Transform:
   m_Father: {fileID: 0}
   m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!50 &3108431066799423873
+Rigidbody2D:
+  serializedVersion: 4
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 7465770134981526832}
+  m_BodyType: 0
+  m_Simulated: 1
+  m_UseFullKinematicContacts: 0
+  m_UseAutoMass: 0
+  m_Mass: 5
+  m_LinearDrag: 0
+  m_AngularDrag: 0.05
+  m_GravityScale: 1
+  m_Material: {fileID: 0}
+  m_Interpolate: 0
+  m_SleepingMode: 1
+  m_CollisionDetection: 0
+  m_Constraints: 6
 --- !u!70 &7465770134981526839
 CapsuleCollider2D:
   m_ObjectHideFlags: 0
@@ -541,7 +563,7 @@ CapsuleCollider2D:
   m_Enabled: 1
   m_Density: 1
   m_Material: {fileID: 0}
-  m_IsTrigger: 1
+  m_IsTrigger: 0
   m_UsedByEffector: 0
   m_UsedByComposite: 0
   m_Offset: {x: 0, y: -0.77}
@@ -561,6 +583,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   Health: 0
   EnemyAnimator: {fileID: 0}
+  TargetChase: {fileID: 0}
 --- !u!95 &459567701
 Animator:
   serializedVersion: 3
